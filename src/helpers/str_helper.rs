@@ -2,6 +2,10 @@ use std::{borrow::Cow, fmt::Write as FmtWrite};
 use term_painter::Color::BrightBlue;
 use term_painter::ToStyle;
 
+pub fn ecs_chars(string: &str) -> String {
+  string.replace("'", "'\\''")
+}
+
 pub fn split(string: String) -> Vec<String> {
   string.split(',').map(|s| s.to_string()).collect()
 }
@@ -13,7 +17,7 @@ pub fn gen_input_file_content_for_ffmpeg(files_to_merge: &Vec<String>) -> String
     if file_to_merge.trim().is_empty() {
       continue;
     }
-    writeln!(ffmpeg_input_content, "file '{}'", file_to_merge).unwrap();
+    writeln!(ffmpeg_input_content, "file '{}'", ecs_chars(file_to_merge)).unwrap();
   }
   ffmpeg_input_content
 }

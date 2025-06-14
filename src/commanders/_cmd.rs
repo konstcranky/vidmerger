@@ -15,6 +15,10 @@ lazy_static! {
   static ref VERBOSE: bool = MATCHES.get_flag("verbose");
 }
 
+pub fn ecs_chars(string: &str) -> String {
+  string.replace("'", "'\\''")
+}
+
 pub fn merge(input: String, output: &String, chapters: &String) -> Output {
   let cmd = format!(
     "ffmpeg -y -f concat -safe 0 -i '{}' -i '{}' -map 0 -map_metadata 1 -c copy '{}'",
@@ -66,7 +70,7 @@ pub fn adjust_fps_by_ffmpeg(
 pub fn get_media_seconds(media_path: &str) -> Result<f64, Box<Error>> {
   let cmd = format!(
     "ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 '{}'",
-    media_path
+    ecs_chars(media_path)
   );
 
   if *VERBOSE {
